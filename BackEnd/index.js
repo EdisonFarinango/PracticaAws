@@ -14,7 +14,7 @@ const PORT = 3000;
 
 // Ruta principal
 app.get('/', (req, res) => {
-    res.send('¡Hola Mundo con Node.js y Express!');
+    res.send('¡Hola Mundo con Node.js y Express desde Ubuntu :)!');
 });
 
 // Ruta para el ping
