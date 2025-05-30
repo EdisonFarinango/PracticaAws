@@ -189,58 +189,72 @@ Eliminar libro con `id=2`
 
 > ℹ️ **Nota:** Todos los endpoints devuelven respuestas en formato JSON.
 
+## 🚀 Comandos Docker
 
+### 1. Instalación de Docker en Ubuntu
 
-## Comandos Docker
-
-# Actualiza la lista de paquetes disponibles en Ubuntu
+```bash
+# Actualiza la lista de paquetes disponibles
 sudo apt update
 
-# Instala paquetes necesarios para usar repositorios HTTPS y otras utilidades
+# Instala utilidades necesarias para repositorios HTTPS
 sudo apt install apt-transport-https ca-certificates curl software-properties-common
 
-# Descarga y añade la clave GPG oficial de Docker para verificar paquetes
+# Añade la clave GPG oficial de Docker
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 
 # Añade el repositorio oficial de Docker para Ubuntu Focal (20.04)
 sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
 
-# Verifica la política de instalación para el paquete docker-ce (Docker Community Edition)
+# Verifica la política de instalación para docker-ce
 apt-cache policy docker-ce
 
 # Instala Docker Community Edition
 sudo apt install docker-ce
 
-# Verifica el estado del servicio Docker para asegurarse que está activo y corriendo
+# Verifica que el servicio Docker esté activo
 sudo systemctl status docker
+```
 
-## Crear el archivo Dockerfile para la imagen Docker
+---
 
-# Usa la imagen oficial de Node.js basada en Alpine Linux, versión 20.10.0
+### 2. Crear un archivo `Dockerfile`
+
+```dockerfile
+# Usa la imagen oficial de Node.js basada en Alpine Linux
 FROM node:20.10.0-alpine3.18
 
-# Define el directorio de trabajo dentro del contenedor
+# Establece el directorio de trabajo
 WORKDIR /app
 
-# Copia los archivos package.json y package-lock.json para instalar dependencias
+# Copia los archivos de dependencias
 COPY package*.json ./
 
-# Instala las dependencias Node.js
+# Instala las dependencias
 RUN npm i
 
-# Copia el archivo principal de la app al contenedor
+# Copia el archivo principal de la app
 COPY index.js ./
 
-# Expone el puerto 3000 para que sea accesible fuera del contenedor
+# Expone el puerto 3000
 EXPOSE 3000
 
-# Comando para iniciar la aplicación Node.js dentro del contenedor
+# Comando para iniciar la aplicación
 CMD ["node", "index.js"]
+```
 
-## Finalmente, para construir y correr el contenedor Docker
+---
 
-# Construye la imagen Docker y la etiqueta como "node-hello"
+### 3. Construir y ejecutar el contenedor Docker
+
+```bash
+# Construye la imagen Docker y asígnale la etiqueta "node-hello"
 docker build -t node-hello .
 
-# Ejecuta el contenedor en segundo plano, mapea el puerto 3000, lo nombra "hello" y reinicia automáticamente en caso de fallo
+# Ejecuta el contenedor en segundo plano, mapeando el puerto 3000
 sudo docker run -d -p 3000:3000 --name hello --restart on-failure node-hello:latest
+```
+
+---
+
+> ℹ️ **Nota:** Asegúrate de tener los archivos `package.json`, `package-lock.json` e `index.js` en el mismo directorio que el `Dockerfile` antes de construir la imagen.
