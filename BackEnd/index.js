@@ -8,6 +8,8 @@ const app = express();
 // Middleware para permitir CORS y leer JSON en el cuerpo de las peticiones
 app.use(cors());
 app.use(express.json()); // Necesario para leer req.body
+app.use(express.static('public'));
+
 
 // Definir el puerto para el servidor
 const PORT = 3000;

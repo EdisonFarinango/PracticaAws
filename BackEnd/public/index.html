@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Libros</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        table { border-collapse: collapse; width: 100%; margin-top: 10px; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        th { background-color: #f4f4f4; }
+        input { margin: 5px; padding: 5px; }
+        button { margin: 5px; padding: 5px 10px; }
+    </style>
+</head>
+<body>
+    <h1>Gestión de Libros</h1>
+
+    <h2>Agregar libro</h2>
+    <input id="titulo" placeholder="Título" />
+    <input id="autor" placeholder="Autor" />
+    <button onclick="agregarLibro()">Agregar</button>
+
+    <h2>Buscar por autor</h2>
+    <input id="busquedaAutor" placeholder="Buscar autor" />
+    <button onclick="buscarPorAutor()">Buscar</button>
+    <button onclick="cargarLibros()">Ver Todos</button>
+
+    <h2>Listado de Libros</h2>
+    <table id="tablaLibros">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Título</th>
+                <th>Autor</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <script>
+        const apiUrl = '/libros';
+
+        function cargarLibros(librosFiltrados = null) {
+            fetch(apiUrl)
+                .then(res => res.json())
+                .then(data => {
+                    mostrarLibros(librosFiltrados || data);
+                });
+        }
+
+        function mostrarLibros(libros) {
+            const tbody = document.querySelector('#tablaLibros tbody');
+            tbody.innerHTML = '';
+            libros.forEach(libro => {
+                const fila = `
+                    <tr>
+                        <td>${libro.id}</td>
+                        <td>${libro.titulo}</td>
+                        <td>${libro.autor}</td>
+                        <td>
+                            <button onclick="eliminarLibro(${libro.id})">Eliminar</button>
+                        </td>
+                    </tr>`;
+                tbody.innerHTML += fila;
+            });
+        }
+
+        function agregarLibro() {
+            const titulo = document.getElementById('titulo').value;
+            const autor = document.getElementById('autor').value;
+
+            fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ titulo, autor })
+            })
+            .then(res => res.json())
+            .then(() => {
+                cargarLibros();
+                document.getElementById('titulo').value = '';
+                document.getElementById('autor').value = '';
+            });
+        }
+
+        function eliminarLibro(id) {
+            fetch(`${apiUrl}/${id}`, { method: 'DELETE' })
+                .then(res => res.json())
+                .then(() => cargarLibros());
+        }
+
+        function buscarPorAutor() {
+            const autor = document.getElementById('busquedaAutor').value;
+            fetch(`${apiUrl}?autor=${encodeURIComponent(autor)}`)
+                .then(res => res.json())
+                .then(data => mostrarLibros(data));
+        }
+
+        cargarLibros();
+    </script>
+</body>
+</html>
